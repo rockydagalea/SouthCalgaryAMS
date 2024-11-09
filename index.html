@@ -15,14 +15,12 @@
         
         <form id="attendanceForm" class="space-y-6">
             <!-- Previous form elements remain the same -->
-            <!-- Date Picker -->
             <div>
                 <label for="date" class="block text-sm font-medium text-gray-700 mb-2">Date</label>
                 <input type="date" id="date" name="date" required
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
             </div>
 
-            <!-- Gathering Dropdown -->
             <div>
                 <label for="gathering" class="block text-sm font-medium text-gray-700 mb-2">Gathering</label>
                 <select id="gathering" name="gathering" required
@@ -42,7 +40,6 @@
                 </select>
             </div>
 
-            <!-- Location Dropdown -->
             <div>
                 <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
                 <select id="location" name="location" required
@@ -54,7 +51,6 @@
                 </select>
             </div>
 
-            <!-- Attendee Search -->
             <div>
                 <label for="attendee" class="block text-sm font-medium text-gray-700 mb-2">Add Attendee</label>
                 <div class="flex space-x-2">
@@ -67,14 +63,12 @@
                 </div>
             </div>
 
-            <!-- Attendees List -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Attendees</label>
                 <div id="attendeesList" class="min-h-[100px] max-h-[200px] overflow-y-auto p-3 border border-gray-300 rounded-md space-y-2">
                 </div>
             </div>
 
-            <!-- Submit Button -->
             <div>
                 <button type="submit"
                     class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
@@ -85,42 +79,170 @@
     </div>
 
     <script>
-        // Initial names list
-        let names = [
-            "Margie Aquino", "Daniel Gegantino", "Ley Mayandia", "Manuel Hosalla", "Ramon Garcia",
-    "Victor Diaz", "Grace Biala", "Michael Montemayor", "Ronaldo Sampang", "Imelda Andrada",
-    "Josephine Sampang", "Grace Salutal", "Boots Gementera", "Richard Manzano", "Lori Manzano",
-    "Lawrence Manzano", "Rommel Gementera", "Gil Macanas", "Lito De Leon", "Jen De Leon",
-    "Jellaine De Leon", "Joal Fugaban", "Minhet De Jesus", "Raul De Jesus", "Agustin Menil",
-    "Tristan Dizon", "Kharl Malijan", "Levy Lucino", "Jerry Dizon", "Anabel Gaoat",
-    "Jersey Dizon", "Darlene Dizon", "Marvin Dando", "Edwin Ong", "Deovito Mosquida",
-    "Jannette Magallanes", "Yanie Malibran", "Ringo Tapiru", "Jerry Maquio", "Ronnie de Castro",
-    "James Hufana", "Cenly Hufana", "Rodel Hufana", "Charisma Morada", "Jeremy Morada",
-    "Dalia Tapiru", "Joni Go", "Jozen Go", "Gilbert Mendoza", "Irenel Cefre",
-    "Rona Mendoza", "Fernando Cruz", "Pio David", "Beth David", "Mary Ann Cefre",
-    "KC Cefre", "MaryAnn Pelayo", "Ronaldo Pelayo", "Jaybee Catabay", "Jackie Sazon",
-    "Omar Sazon", "Kim Regio", "Ricky Lazo", "Mike Capito", "Enesil Capito",
-    "Rodante Lozano", "Emz Lozano", "Ricardo Manzano", "Jerico Palileo", "Mark Malibiran",
-    "Jamille Capito", "Sidney Dizon", "Rosalia Bing Balbanida", "Jonash Sampang", "Arjay Sampang",
-    "Michael Sampang", "Darwin De Jesus", "Alvin Umbac", "Candy Vaughan", "George Tiomico",
-    "Marlyn Tiomico", "Andy Malibiran", "Gigi Malibiran", "Elizabeth Gomez", "Belen Miguel",
-    "Emil Arguelles", "Tess Arguelles", "Jaime Valmores", "Lolita Valmores", "Federico Basco",
-    "Vilma Basco", "Joselito Martisano", "Leo Sanguir", "Agnes De Chaves", "Dominga Salvador",
-    "Teody Salvador", "Chris Pineda", "Guillermo Salonga", "Jona Pineda", "Jemverick Salonga",
-    "Jeremy Salonga", "Rose Salonga", "Roselyn Tabiano", "Rene Lolong", "Crispen Dulfo",
-    "Malosa Dulfo", "Efraim Dulfo", "Ravin Custona", "Eleizar Dulfo", "Christian Tabiano",
-    "Luchavez Formentera", "Neriza Formentera", "Eric Arma", "Joven Jamio", "Rowena Jamio",
-    "Chris Buzon", "Romelda Buzon", "Jaynard Fernandez", "Maricel Fernandez", "Jackie Magracia",
-    "Josefina Magracia", "Remedios Ollero", "Rosalinda Fernandez", "Fernando Fernandez", "Ric Salvador",
-    "Evangeline Ancheta", "Jen Moreno", "Dante Merjudio", "Jellen Merjudio", "Luther Luzuriaga",
-    "Reggie Mike Galza", "Gina Galza", "Regeanne Galza", "Reyes Corazon", "Mark Luzuriaga",
-    "Nemesio Anyayahan", "Celine Anyayahan", "Paul Coralde", "Roberto Fajardo Macapagal", "Ismael Perez",
-    "Joy Perez", "Jeremiah Pangan", "Melai Gegantino", "Rocky Dagalea", "Thess Arguelles",
-    "Roman Bancolita", "Alexa Salonga", "Mico Malibiran", "Akira De Jesus", "Gian Macanas",
-    "Precious De Jesus", "Danie Malibiran", "Timmy Morada", "Breavhin Tapiru", "Federico Soriano",
-    "Nancy Gomez", "Joross Tabiano"
-        ];
+        // Members data with group numbers
+        const membersData = {
+            "Margie Aquino": "1",
+    "Daniel Gegantino": "1",
+    "Ley Mayandia": "1",
+    "Manuel Hosalla": "1",
+    "Ramon Garcia": "1",
+    "Victor Diaz": "1",
+    "Grace Biala": "1",
+    "Michael Montemayor": "1",
+    "Ronaldo Sampang": "2",
+    "Imelda Andrada": "2",
+    "Josephine Sampang": "2",
+    "Grace Salutal": "2",
+    "Boots Gementera": "2",
+    "Richard Manzano": "2",
+    "Lori Manzano": "2",
+    "Lawrence Manzano": "2",
+    "Rommel Gementera": "2",
+    "Gil Macanas": "2",
+    "Lito De Leon": "3",
+    "Jen De Leon": "3",
+    "Jellaine De Leon": "3",
+    "Joal Fugaban": "3",
+    "Minhet De Jesus": "3",
+    "Raul De Jesus": "3",
+    "Agustin Menil": "3",
+    "Tristan Dizon": "3",
+    "Kharl Malijan": "3",
+    "Levy Lucino": "3",
+    "Jerry Dizon": "4",
+    "Anabel Gaoat": "4",
+    "Jersey Dizon": "4",
+    "Darlene Dizon": "4",
+    "Marvin Dando": "4",
+    "Edwin Ong": "4",
+    "Deovito Mosquida": "4",
+    "Jannette Magallanes": "4",
+    "Yanie Malibran": "5",
+    "Ringo Tapiru": "5",
+    "Jerry Maquio": "5",
+    "Ronnie de Castro": "5",
+    "James Hufana": "5",
+    "Cenly Hufana": "5",
+    "Rodel Hufana": "5",
+    "Charisma Morada": "5",
+    "Jeremy Morada": "5",
+    "Dalia Tapiru": "5",
+    "Joni Go": "5",
+    "Jozen Go": "5",
+    "Gilbert Mendoza": "6",
+    "Irenel Cefre": "6",
+    "Rona Mendoza": "6",
+    "Fernando Cruz": "6",
+    "Pio David": "6",
+    "Beth David": "6",
+    "Mary Ann Cefre": "6",
+    "KC Cefre": "6",
+    "MaryAnn Pelayo": "6",
+    "Ronaldo Pelayo": "6",
+    "Jaybee Catabay": "6",
+    "Jackie Sazon": "6",
+    "Omar Sazon": "6",
+    "Kim Regio": "6",
+    "Ricky Lazo": "7",
+    "Mike Capito": "7",
+    "Enesil Capito": "7",
+    "Rodante Lozano": "7",
+    "Emz Lozano": "7",
+    "Ricardo Manzano": "7",
+    "Jerico Palileo": "7",
+    "Mark Malibiran": "7",
+    "Jamille Capito": "7",
+    "Sidney Dizon": "8",
+    "Rosalia Bing Balbanida": "8",
+    "Jonash Sampang": "8",
+    "Arjay Sampang": "8",
+    "Michael Sampang": "8",
+    "Darwin De Jesus": "8",
+    "Alvin Umbac": "8",
+    "Candy Vaughan": "8",
+    "George Tiomico": "8",
+    "Marlyn Tiomico": "8",
+    "Andy Malibiran": "9",
+    "Gigi Malibiran": "9",
+    "Elizabeth Gomez": "9",
+    "Belen Miguel": "9",
+    "Emil Arguelles": "9",
+    "Tess Arguelles": "9",
+    "Jaime Valmores": "9",
+    "Lolita Valmores": "9",
+    "Federico Basco": "9",
+    "Vilma Basco": "9",
+    "Joselito Martisano": "9",
+    "Leo Sanguir": "9",
+    "Agnes De Chaves": "9",
+    "Dominga Salvador": "9",
+    "Teody Salvador": "9",
+    "Chris Pineda": "10",
+    "Guillermo Salonga": "10",
+    "Jona Pineda": "10",
+    "Jemverick Salonga": "10",
+    "Jeremy Salonga": "10",
+    "Rose Salonga": "10",
+    "Roselyn Tabiano": "10",
+    "Rene Lolong": "10",
+    "Crispen Dulfo": "10",
+    "Malosa Dulfo": "10",
+    "Efraim Dulfo": "10",
+    "Ravin Custona": "10",
+    "Eleizar Dulfo": "10",
+    "Christian Tabiano": "10",
+    "Luchavez Formentera": "10",
+    "Neriza Formentera": "10",
+    "Eric Arma": "10",
+    "Joven Jamio": "11",
+    "Rowena Jamio": "11",
+    "Chris Buzon": "11",
+    "Romelda Buzon": "11",
+    "Jaynard Fernandez": "11",
+    "Maricel Fernandez": "11",
+    "Jackie Magracia": "11",
+    "Josefina Magracia": "11",
+    "Remedios Ollero": "11",
+    "Rosalinda Fernandez": "11",
+    "Fernando Fernandez": "11",
+    "Ric Salvador": "12",
+    "Evangeline Ancheta": "12",
+    "Jen Moreno": "12",
+    "Dante Merjudio": "12",
+    "Jellen Merjudio": "12",
+    "Luther Luzuriaga": "12",
+    "Reggie Mike Galza": "12",
+    "Gina Galza": "12",
+    "Regeanne Galza": "12",
+    "Reyes Corazon": "12",
+    "Mark Luzuriaga": "12",
+    "Nemesio Anyayahan": "12",
+    "Celine Anyayahan": "12",
+    "Paul Coralde": "12",
+    "Roberto Fajardo Macapagal": "12",
+    "Ismael Perez": "12",
+    "Joy Perez": "12",
+    "Jeremiah Pangan": "12",
+    "Melai Gegantino": "1",
+    "Rocky Dagalea": "1",
+    "Thess Arguelles": "9",
+    "Roman Bancolita": "12",
+    "Alexa Salonga": "10",
+    "Mico Malibiran": "7",
+    "Akira De Jesus": "MCGI KT",
+    "Gian Macanas": "MCGI KT",
+    "Precious De Jesus": "MCGI KT",
+    "Danie Malibiran": "MCGI KT",
+    "Timmy Morada": "MCGI KT",
+    "Breavhin Tapiru": "MCGI KT",
+    "Federico Soriano": "10",
+    "Nancy Gomez": "10",
+    "Joross Tabiano": "MCGI KT"
+            // Add group numbers for all members
+        };
 
+        // Get just the names for autocomplete
+        let names = Object.keys(membersData);
         let selectedAttendees = new Set();
 
         // Initialize autocomplete
@@ -151,6 +273,10 @@
             });
         });
 
+        function getGroupNumber(name) {
+            return membersData[name] || "Other / Guest";
+        }
+
         function addAttendee(name) {
             if (!selectedAttendees.has(name)) {
                 selectedAttendees.add(name);
@@ -158,9 +284,13 @@
                     names.push(name);
                 }
                 
+                const groupNumber = getGroupNumber(name);
                 const attendeeElement = $(`
                     <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
-                        <span>${name}</span>
+                        <div>
+                            <span class="font-medium">${name}</span>
+                            <span class="ml-2 text-sm text-gray-500">${groupNumber}</span>
+                        </div>
                         <button type="button" class="text-red-600 hover:text-red-800" onclick="removeAttendee('${name}')">
                             ×
                         </button>
@@ -177,15 +307,20 @@
         }
 
         async function submitAttendance() {
+            const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
+                name: name,
+                group: getGroupNumber(name)
+            }));
+
             const formData = {
                 date: $("#date").val(),
                 gathering: $("#gathering").val(),
                 location: $("#location").val(),
-                attendees: Array.from(selectedAttendees)
+                attendees: attendeesWithGroups
             };
 
             try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycby5jhx5b_SLGvBxekA3ii2_ts5GNbUO31p1qKbj26sUYAqCZkyV7CZhqWBiLxgqVLqY/exec', {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
