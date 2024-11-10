@@ -241,105 +241,113 @@
             // Add group numbers for all members
         };
 
-        // Get just the names for autocomplete
-        let names = Object.keys(membersData);
-        let selectedAttendees = new Set();
+// Get just the names for autocomplete
+let names = Object.keys(membersData);
+let selectedAttendees = new Set();
 
-        // Initialize autocomplete
-        $(document).ready(function() {
-            $("#attendee").autocomplete({
-                source: function(request, response) {
-                    const term = request.term.toLowerCase();
-                    const matches = names.filter(name => 
-                        name.toLowerCase().includes(term) && 
-                        !selectedAttendees.has(name)
-                    );
-                    response(matches);
-                },
-                minLength: 1
-            });
+// Initialize autocomplete
+$(document).ready(function() {
+    $("#attendee").autocomplete({
+        source: function(request, response) {
+            const term = request.term.toLowerCase();
+            const matches = names.filter(name => 
+                name.toLowerCase().includes(term) && 
+                !selectedAttendees.has(name)
+            );
+            response(matches);
+        },
+        minLength: 1
+    });
 
-            $("#addAttendee").click(function() {
-                const name = $("#attendee").val().trim();
-                if (name) {
-                    addAttendee(name);
-                    $("#attendee").val('');
-                }
-            });
+    // Handle Enter key for adding attendees
+    $("#attendee").on("keypress", function(e) {
+        if (e.which === 13) {  // Enter key
+            e.preventDefault();
+            $("#addAttendee").click();
+        }
+    });
 
-            $("#attendanceForm").submit(function(e) {
-                e.preventDefault();
-                submitAttendance();
-            });
+    $("#addAttendee").click(function() {
+        const name = $("#attendee").val().trim();
+        if (name) {
+            addAttendee(name);
+            $("#attendee").val('').focus();  // Clear input and focus back
+        }
+    });
+
+    $("#attendanceForm").submit(function(e) {
+        e.preventDefault();
+        submitAttendance();
+    });
+});
+
+function getGroupNumber(name) {
+    return membersData[name] || "Other / Guest";
+}
+
+function addAttendee(name) {
+    if (!selectedAttendees.has(name)) {
+        selectedAttendees.add(name);
+        if (!names.includes(name)) {
+            names.push(name);
+        }
+        
+        const groupNumber = getGroupNumber(name);
+        const attendeeElement = $(`
+            <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                <div>
+                    <span class="font-medium">${name}</span>
+                    <span class="ml-2 text-sm text-gray-500">${groupNumber}</span>
+                </div>
+                <button type="button" class="text-red-600 hover:text-red-800" onclick="removeAttendee('${name}')">
+                    ×
+                </button>
+            </div>
+        `);
+        
+        $("#attendeesList").append(attendeeElement);
+    }
+}
+
+function removeAttendee(name) {
+    selectedAttendees.delete(name);
+    $("#attendeesList").find(`div:contains('${name}')`).remove();
+}
+
+async function submitAttendance() {
+    const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
+        name: name,
+        group: getGroupNumber(name)
+    }));
+
+    const formData = {
+        date: $("#date").val(),
+        gathering: $("#gathering").val(),
+        location: $("#location").val(),
+        attendees: attendeesWithGroups
+    };
+
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
         });
 
-        function getGroupNumber(name) {
-            return membersData[name] || "Other / Guest";
-        }
-
-        function addAttendee(name) {
-            if (!selectedAttendees.has(name)) {
-                selectedAttendees.add(name);
-                if (!names.includes(name)) {
-                    names.push(name);
-                }
-                
-                const groupNumber = getGroupNumber(name);
-                const attendeeElement = $(`
-                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
-                        <div>
-                            <span class="font-medium">${name}</span>
-                            <span class="ml-2 text-sm text-gray-500">${groupNumber}</span>
-                        </div>
-                        <button type="button" class="text-red-600 hover:text-red-800" onclick="removeAttendee('${name}')">
-                            ×
-                        </button>
-                    </div>
-                `);
-                
-                $("#attendeesList").append(attendeeElement);
-            }
-        }
-
-        function removeAttendee(name) {
-            selectedAttendees.delete(name);
-            $("#attendeesList").find(`div:contains('${name}')`).remove();
-        }
-
-        async function submitAttendance() {
-            const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
-                name: name,
-                group: getGroupNumber(name)
-            }));
-
-            const formData = {
-                date: $("#date").val(),
-                gathering: $("#gathering").val(),
-                location: $("#location").val(),
-                attendees: attendeesWithGroups
-            };
-
-            try {
-                const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                alert('Attendance submitted successfully!');
-                
-                // Reset form
-                $("#attendeesList").empty();
-                selectedAttendees.clear();
-                $("#attendanceForm")[0].reset();
-            } catch (error) {
-                alert('Error submitting attendance. Please try again.');
-                console.error('Error:', error);
-            }
-        }
+        alert('Attendance submitted successfully!');
+        
+        // Reset form
+        $("#attendeesList").empty();
+        selectedAttendees.clear();
+        $("#attendanceForm")[0].reset();
+    } catch (error) {
+        alert('Error submitting attendance. Please try again.');
+        console.error('Error:', error);
+    }
+}
     </script>
 </body>
 </html>
