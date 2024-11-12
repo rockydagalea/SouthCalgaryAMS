@@ -26,13 +26,20 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+       
+
     </style>
     
     
 </head>
 <body class="bg-gray-100 p-6">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">South Calgary Locale AMS</h1>
+        <div class="flex items-center justify-center mb-8">
+            <img src="./attendance.png" alt="Logo" class="h-14 w-14 mr-4">
+            <h1 class="text-3xl font-bold text-gray-800">South Calgary Locale AMS</h1>
+        </div>
+        
         
         <form id="attendanceForm" class="space-y-6">
             <!-- Previous form elements remain the same -->
@@ -94,18 +101,20 @@
 
             <div>
                 <button type="submit"
-                    class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     Submit Attendance
                 </button>
             </div>
         </form>
 
-        <div id="loadingScreen" class="absolute top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 flex items-center justify-center hidden">
+        <div id="loadingScreen" class="absolute top-0 left-0 w-full h-full bg-gray-800 bg-opacity-90 flex items-center justify-center hidden ">
             <div class="text-white text-2xl font-bold flex items-center">
-                <div class="mr-4 loading-spinner border-4 border-white border-solid rounded-full w-10 h-10"></div>
-                Loading...
+                <div class="mr-4 loading-spinner border-4 border-white border-solid rounded-full w-20 h-20 position: fixed"></div>
+                Loading Please wait...
             </div>
         </div>
+
+
 
         
 
@@ -351,45 +360,86 @@ function removeAttendee(name) {
     $("#attendeesList").find(`div:contains('${name}')`).remove();
 }
 
-async function submitAttendance() {
-            $("#loadingScreen").show(); // Show the loading screen
+// async function submitAttendance() {
+//             $("#loadingScreen").show(); // Show the loading screen
 
-            const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
-                name: name,
-                group: getGroupNumber(name)
-            }));
+//             const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
+//                 name: name,
+//                 group: getGroupNumber(name)
+//             }));
 
-    const formData = {
-        date: $("#date").val(),
-        gathering: $("#gathering").val(),
-        location: $("#location").val(),
-        attendees: attendeesWithGroups
-    };
+//     const formData = {
+//         date: $("#date").val(),
+//         gathering: $("#gathering").val(),
+//         location: $("#location").val(),
+//         attendees: attendeesWithGroups
+//     };
 
-    try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        });
+//     try {
+//         const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
+//             method: 'POST',
+//             mode: 'no-cors',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(formData)
+//         });
 
-        alert('Attendance submitted successfully!');
+//         alert('Attendance submitted successfully!');
         
-        // Reset form
-        // Reset form
-        $("#attendeesList").empty();
-                selectedAttendees.clear();
-                $("#attendanceForm")[0].reset();
-            } catch (error) {
-                alert('Error submitting attendance. Please try again.');
-                console.error('Error:', error);
-            } finally {
-                $("#loadingScreen").hide(); // Hide the loading screen
-            }
-}
+//         // Reset form
+//         // Reset form
+//         $("#attendeesList").empty();
+//                 selectedAttendees.clear();
+//                 $("#attendanceForm")[0].reset();
+//             } catch (error) {
+//                 alert('Error submitting attendance. Please try again.');
+//                 console.error('Error:', error);
+//             } finally {
+//                 $("#loadingScreen").hide(); // Hide the loading screen
+//             }
+// }
+
+async function submitAttendance() {
+        $("#loadingScreen").removeClass("hidden"); // Show the loading screen
+
+        const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
+            name: name,
+            group: getGroupNumber(name)
+        }));
+
+        const formData = {
+            date: $("#date").val(),
+            gathering: $("#gathering").val(),
+            location: $("#location").val(),
+            attendees: attendeesWithGroups
+        };
+
+        try {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            alert('Attendance submitted successfully!');
+
+            // Reset form
+            $("#attendeesList").empty();
+            selectedAttendees.clear();
+            $("#attendanceForm")[0].reset();
+        } catch (error) {
+            alert('Error submitting attendance. Please try again.');
+            console.error('Error:', error);
+        } finally {
+            $("#loadingScreen").addClass("hidden"); // Hide the loading screen
+        }
+    }
+
+
     </script>
 </body>
 </html>
