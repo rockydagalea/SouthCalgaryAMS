@@ -12,22 +12,36 @@
 
     <style>
         .loading-spinner {
-            border-top-color: transparent;
-            -webkit-animation: spin 1s linear infinite;
-            animation: spin 1s linear infinite;
-        }
+    border-top-color: transparent;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+}
 
-        @-webkit-keyframes spin {
-            0% { -webkit-transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); }
-        }
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-       
+/* New styles for the loading screen */
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    transition: opacity 0.3s ease;
+}
+
+#loadingScreen.hidden {
+    opacity: 0;
+}
+
 
     </style>
     
@@ -107,12 +121,15 @@
             </div>
         </form>
 
-        <div id="loadingScreen" class="absolute top-0 left-0 w-full h-full bg-gray-800 bg-opacity-90 flex items-center justify-center hidden ">
-            <div class="text-white text-2xl font-bold flex items-center">
-                <div class="mr-4 loading-spinner border-4 border-white border-solid rounded-full w-20 h-20 position: fixed"></div>
-                Loading Please wait...
+        <div id="loadingScreen" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 hidden">
+            <div class="text-white text-2xl font-bold flex flex-col items-center">
+                <div class="mr-4 loading-spinner border-4 border-white border-solid rounded-full w-20 h-20"></div>
+                <div>Loading Please wait until attendance submitted successfully.</div><br>
+                <div>Do not close this screen</div><br>
+
             </div>
         </div>
+        
 
 
 
@@ -400,6 +417,7 @@ function removeAttendee(name) {
 //             }
 // }
 
+/*
 async function submitAttendance() {
         $("#loadingScreen").removeClass("hidden"); // Show the loading screen
 
@@ -438,6 +456,46 @@ async function submitAttendance() {
             $("#loadingScreen").addClass("hidden"); // Hide the loading screen
         }
     }
+*/
+
+async function submitAttendance() {
+    $("#loadingScreen").removeClass("hidden"); // Show the loading screen
+
+    const attendeesWithGroups = Array.from(selectedAttendees).map(name => ({
+        name: name,
+        group: getGroupNumber(name)
+    }));
+
+    const formData = {
+        date: $("#date").val(),
+        gathering: $("#gathering").val(),
+        location: $("#location").val(),
+        attendees: attendeesWithGroups
+    };
+
+    try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwP7NmiwfLdmeIBQxZs6uY3QybbgABdHN2ICXxLd0snnE-lrE-bYi36L42Ogf07bE94/exec', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+
+        alert('Attendance submitted successfully!');
+
+        // Reset form
+        $("#attendeesList").empty();
+        selectedAttendees.clear();
+        $("#attendanceForm")[0].reset();
+    } catch (error) {
+        alert('Error submitting attendance. Please try again.');
+        console.error('Error:', error);
+    } finally {
+        $("#loadingScreen").addClass("hidden"); // Hide the loading screen
+    }
+}
 
 
     </script>
